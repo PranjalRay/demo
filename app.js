@@ -106,6 +106,26 @@ app.post('/login', async (req, res) => {
   res.send('Signin successful');
 });
 
+// Admin routes
+app.get('/admin/signin', (req, res) => {
+  // Display the admin sign-in form
+  res.render('admin-signin');
+});
+
+app.post('/admin/signin', (req, res) => {
+  // Handle admin sign-in
+  const { email, password } = req.body;
+  // Check if the email and password match the admin credentials
+  if (email === 'admin@admin.com' && password === 'admin') {
+    // Admin sign-in successful
+    // Set a flag in the session to indicate that the user is an admin
+    req.session.isAdmin = true;
+    res.send('Admin sign-in successful');
+  } else {
+    // Invalid admin credentials
+    res.status(400).send('Invalid admin credentials');
+  }
+});
 
 app.get('/signout', (req, res) => {
   // Handle user signout
