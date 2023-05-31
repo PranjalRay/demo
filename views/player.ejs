@@ -10,7 +10,7 @@
 </head>
 
 <body>
-  <% include header.ejs %>
+  <%= include('header') %>
 
   <div class="container">
     <h2>Welcome, <%= player.name %>!</h2>
@@ -21,7 +21,7 @@
     <% include joinedSessionSaperateList.ejs %>
   </div>
 
-  <% include footer.ejs %>
+  <%= include('footer') %>
 </body>
 
 </html>
