@@ -32,6 +32,12 @@ const sports = [];
 const users = [];
 const sessions = [];
 
+// Middleware to set 'message' variable
+app.use((req, res, next) => {
+  res.locals.message = ''; // Initialize with an empty message
+  next();
+});
+
 // Routes
 app.get('/', (req, res) => {
   res.render('index');
@@ -57,18 +63,20 @@ app.post('/admin/sports', (req, res) => {
 // User routes
 app.get('/signup', (req, res) => {
   // Display the signup form
-  res.render('signup');
+  res.render('signup', { message: res.locals.message });
 });
 
 app.post('/signup', async (req, res) => {
   // Handle user signup
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
-    return res.status(400).send('Name, email, and password are required');
+    res.locals.message = 'Name, email, and password are required';
+    return res.redirect('/signup');
   }
   const existingUser = users.find(u => u.email === email);
   if (existingUser) {
-    return res.status(400).send('User with that email already exists');
+    res.locals.message = 'User with that email already exists';
+    return res.redirect('/signup');
   }
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = { id: uuidv4(), name, email, password: hashedPassword };
@@ -78,22 +86,25 @@ app.post('/signup', async (req, res) => {
 
 app.get('/signin', (req, res) => {
   // Display the signin form
-  res.render('signin');
+  res.render('signin', { message: res.locals.message });
 });
 
 app.post('/signin', async (req, res) => {
   // Handle user signin
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).send('Email and password are required');
+    res.locals.message = 'Email and password are required';
+    return res.redirect('/signin');
   }
   const user = users.find(u => u.email === email);
   if (!user) {
-    return res.status(400).send('User not found');
+    res.locals.message = 'User not found';
+    return res.redirect('/signin');
   }
   const match = await bcrypt.compare(password, user.password);
   if (!match) {
-    return res.status(400).send('Invalid credentials');
+    res.locals.message = 'Invalid credentials';
+    return res.redirect('/signin');
   }
   req.session.userId = user.id;
   res.send('Signin successful');
@@ -107,14 +118,15 @@ app.get('/signout', (req, res) => {
 
 app.get('/sessions/create', (req, res) => {
   // Display the form to create a new session
-  res.render('create-session');
+  res.render('create-session', { message: res.locals.message });
 });
 
 app.post('/sessions/create', (req, res) => {
   // Create a new session
   const { sportId, teamA, teamB, additionalPlayers, dateTime, venue } = req.body;
   if (!sportId || !teamA || !teamB || !additionalPlayers || !dateTime || !venue) {
-    return res.status(400).send('All fields are required');
+    res.locals.message = 'All fields are required';
+    return res.redirect('/sessions/create');
   }
   const session = {
     id: uuidv4(),
