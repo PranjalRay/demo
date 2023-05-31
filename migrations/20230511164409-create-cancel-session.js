@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.DATE
       },
       sportSessionId: {
-        type: Sequelize.UUID,
+        type: Sequelize.INTEGER, // Change the data type to INTEGER
         allowNull: false,
         references: {
           model: 'SportSessions',
