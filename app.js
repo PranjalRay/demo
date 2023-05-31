@@ -84,11 +84,11 @@ app.post('/signup', async (req, res) => {
   res.send('Signup successful');
 });
 
-app.get('/signin', (req, res) => {
+app.get('/login', (req, res) => {
   // Display the signin form
   res.render('login', { message: res.locals.message });
 });
-app.post('/signin', async (req, res) => {
+app.post('/login', async (req, res) => {
   // Handle user signin
   const { email, password } = req.body;
   if (!email || !password) {
