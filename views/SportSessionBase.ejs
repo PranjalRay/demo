@@ -1,0 +1,26 @@
+<!-- views/SportSessionBase.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>Sport Session</title>
+</head>
+
+<body>
+  <% include header.ejs %>
+
+  <div class="container">
+    <h2>Sport Session</h2>
+    <% include cancelSession.ejs %>
+    <% include canceledSession.ejs %>
+    <% include createdSessionByUserList.ejs %>
+    <% include joinedSessionSaperateList.ejs %>
+  </div>
+
+  <% include footer.ejs %>
+</body>
+
+</html>
