@@ -1,0 +1,38 @@
+<!-- views/admin-signin.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>Admin Sign In</title>
+</head>
+
+<body>
+  <% include('header') %>
+
+  <div class="container">
+    <h2>Admin Sign In</h2>
+    <% if (message) { %>
+    <div class="alert alert-danger">
+      <%= message %>
+    </div>
+    <% } %>
+    <form method="POST" action="/admin/signin">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit" class="button">Sign In</button>
+    </form>
+  </div>
+
+  <% include('footer') %>
+</body>
+
+</html>
