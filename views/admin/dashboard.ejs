@@ -1,0 +1,25 @@
+<!-- views/admin/dashboard.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>Admin Dashboard</title>
+</head>
+
+<body>
+  <% include('../header') %>
+
+  <div class="container">
+    <h2>Welcome, Admin</h2>
+    <p>Manage sports and sessions</p>
+    <a href="/admin/create-sport" class="button">Create Sport</a>
+    <!-- Add more links/buttons for other admin functionalities -->
+  </div>
+
+  <% include('../footer') %>
+</body>
+
+</html>
