@@ -1,0 +1,8 @@
+<!-- views/sportDetail.ejs -->
+<h3>Sport Details</h3>
+<% if (sport) { %>
+  <p>Name: <%= sport.name %></p>
+  <p>Description: <%= sport.description %></p>
+<% } else { %>
+  <p>Sport not found.</p>
+<% } %>
