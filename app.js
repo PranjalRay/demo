@@ -86,29 +86,26 @@ app.post('/signup', async (req, res) => {
 
 app.get('/signin', (req, res) => {
   // Display the signin form
-  res.render('signin', { message: res.locals.message });
+  res.render('login', { message: res.locals.message });
 });
-
 app.post('/signin', async (req, res) => {
   // Handle user signin
   const { email, password } = req.body;
   if (!email || !password) {
-    res.locals.message = 'Email and password are required';
-    return res.redirect('/signin');
+    return res.status(400).send('Email and password are required');
   }
   const user = users.find(u => u.email === email);
   if (!user) {
-    res.locals.message = 'User not found';
-    return res.redirect('/signin');
+    return res.status(400).send('User not found');
   }
   const match = await bcrypt.compare(password, user.password);
   if (!match) {
-    res.locals.message = 'Invalid credentials';
-    return res.redirect('/signin');
+    return res.status(400).send('Invalid credentials');
   }
   req.session.userId = user.id;
   res.send('Signin successful');
 });
+
 
 app.get('/signout', (req, res) => {
   // Handle user signout
