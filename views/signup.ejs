@@ -10,7 +10,7 @@
 </head>
 
 <body>
-  <% include header.ejs %>
+  <%= include('header') %>
 
   <div class="container">
     <h2>Sign Up</h2>
@@ -41,7 +41,8 @@
     <p>Already have an account? <a href="/signin">Log in</a></p>
   </div>
 
-  <% include footer.ejs %>
+  <%= include('footer') %>
 </body>
 
 </html>
+
