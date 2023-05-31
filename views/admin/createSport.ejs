@@ -1,0 +1,13 @@
+<!-- views/admin/createSport.ejs -->
+<h3>Create Sport</h3>
+<form action="/admin/create-sport" method="POST">
+  <div class="form-group">
+    <label for="sportName">Sport Name:</label>
+    <input type="text" id="sportName" name="sportName" required>
+  </div>
+  <div class="form-group">
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" required></textarea>
+  </div>
+  <button type="submit" class="button">Create Sport</button>
+</form>
