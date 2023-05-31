@@ -4,22 +4,28 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+
+// Import models
 const CancelSession = require('./CancelSession');
 const Index = require('./Index');
 const Sport = require('./Sport');
 const SportSession = require('./SportSession');
 const Todo = require('./Todo');
 const User = require('./User');
+
 // Create an instance of Express
 const app = express();
 
 // Set up middleware
+app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
   secret: 'secret-key',
   resave: false,
   saveUninitialized: false
 }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Database (assuming you're using a simple in-memory data structure)
 const sports = [];
