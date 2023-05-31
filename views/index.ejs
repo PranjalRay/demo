@@ -1,0 +1,25 @@
+<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>Todo App</title>
+</head>
+
+<body>
+  <% include header.ejs %>
+
+  <div class="container">
+    <h2>Welcome to Todo App</h2>
+    <p>Please sign up or log in to continue.</p>
+    <a href="/signup" class="button">Sign Up</a>
+    <a href="/login" class="button">Log In</a>
+  </div>
+
+  <% include footer.ejs %>
+</body>
+
+</html>
