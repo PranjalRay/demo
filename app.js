@@ -7,12 +7,12 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 
 // Import models
-const CancelSession = require('./CancelSession');
-const Index = require('./Index');
-const Sport = require('./Sport');
-const SportSession = require('./SportSession');
-const Todo = require('./Todo');
-const User = require('./User');
+const CancelSession = require('./models/CancelSession');
+const Index = require('./models/Index');
+const Sport = require('./models/Sport');
+const SportSession = require('./models/SportSession');
+const Todo = require('./models/Todo');
+const User = require('./models/User');
 
 // Create an instance of Express
 const app = express();
