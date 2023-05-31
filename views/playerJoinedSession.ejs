@@ -1,0 +1,21 @@
+<!-- views/playerJoinedSession.ejs -->
+<h3>Joined Sessions</h3>
+<% if (joinedSessions.length === 0) { %>
+  <p>No joined sessions.</p>
+<% } else { %>
+  <ul>
+    <% joinedSessions.forEach(function(session) { %>
+      <li>
+        <p>Sport: <%= session.sport %></p>
+        <p>Date: <%= session.date %></p>
+        <p>Time: <%= session.time %></p>
+        <p>Venue: <%= session.venue %></p>
+        <p>Additional Players Needed: <%= session.additionalPlayersNeeded %></p>
+        <p>Joined Players: <%= session.joinedPlayers.length %></p>
+        <% if (!session.isPast) { %>
+          <a href="/join-session?sessionId=<%= session.id %>" class="button">Join Session</a>
+        <% } %>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
