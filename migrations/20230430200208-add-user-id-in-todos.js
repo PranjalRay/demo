@@ -3,7 +3,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.addColumn('Todos', 'userId', {
-      type: Sequelize.UUID,
+      type: Sequelize.INTEGER, // Change the data type to INTEGER
       allowNull: false,
       references: {
         model: 'Users',
@@ -18,3 +18,4 @@ module.exports = {
     await queryInterface.removeColumn('Todos', 'userId');
   }
 };
+
