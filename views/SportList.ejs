@@ -1,0 +1,31 @@
+<!-- views/SportList.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>Sport List</title>
+</head>
+
+<body>
+  <% include header.ejs %>
+
+  <div class="container">
+    <h2>Available Sports</h2>
+    <% if (sports.length === 0) { %>
+      <p>No sports available.</p>
+    <% } else { %>
+      <ul>
+        <% sports.forEach(function(sport) { %>
+          <li><%= sport.name %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+
+  <% include footer.ejs %>
+</body>
+
+</html>
