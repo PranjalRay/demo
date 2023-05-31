@@ -1,0 +1,11 @@
+<!-- views/viewReport.ejs -->
+<h3>Report</h3>
+<% if (report) { %>
+  <p>Total Sessions: <%= report.totalSessions %></p>
+  <p>Active Sessions: <%= report.activeSessions %></p>
+  <p>Canceled Sessions: <%= report.canceledSessions %></p>
+  <p>Total Players: <%= report.totalPlayers %></p>
+  <p>Average Players per Session: <%= report.averagePlayersPerSession %></p>
+<% } else { %>
+  <p>No report available.</p>
+<% } %>
