@@ -109,7 +109,7 @@ app.post('/login', async (req, res) => {
 
 // Admin routes
 
-app.get('/admin', (req, res) => {
+app.get('/admin/admin-signin', (req, res) => {
   // Display the admin sign-in form
   res.render('admin/admin-signin');
 });
