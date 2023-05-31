@@ -35,6 +35,9 @@ app.get('/admin/sports', (req, res) => {
 app.post('/admin/sports', (req, res) => {
   // Create a new sport
   const { name } = req.body;
+  if (!name) {
+    return res.status(400).send('Sport name is required');
+  }
   const sport = { id: uuidv4(), name };
   sports.push(sport);
   res.send(`Sport ${name} created successfully`);
@@ -49,6 +52,13 @@ app.get('/signup', (req, res) => {
 app.post('/signup', async (req, res) => {
   // Handle user signup
   const { name, email, password } = req.body;
+  if (!name || !email || !password) {
+    return res.status(400).send('Name, email, and password are required');
+  }
+  const existingUser = users.find(u => u.email === email);
+  if (existingUser) {
+    return res.status(400).send('User with that email already exists');
+  }
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = { id: uuidv4(), name, email, password: hashedPassword };
   users.push(user);
@@ -63,15 +73,19 @@ app.get('/signin', (req, res) => {
 app.post('/signin', async (req, res) => {
   // Handle user signin
   const { email, password } = req.body;
-  const user = users.find(u => u.email === email);
-  if (user) {
-    const match = await bcrypt.compare(password, user.password);
-    if (match) {
-      req.session.userId = user.id;
-      return res.send('Signin successful');
-    }
+  if (!email || !password) {
+    return res.status(400).send('Email and password are required');
   }
-  res.send('Invalid credentials');
+  const user = users.find(u => u.email === email);
+  if (!user) {
+    return res.status(400).send('User not found');
+  }
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) {
+    return res.status(400).send('Invalid credentials');
+  }
+  req.session.userId = user.id;
+  res.send('Signin successful');
 });
 
 app.get('/signout', (req, res) => {
@@ -88,6 +102,9 @@ app.get('/sessions/create', (req, res) => {
 app.post('/sessions/create', (req, res) => {
   // Create a new session
   const { sportId, teamA, teamB, additionalPlayers, dateTime, venue } = req.body;
+  if (!sportId || !teamA || !teamB || !additionalPlayers || !dateTime || !venue) {
+    return res.status(400).send('All fields are required');
+  }
   const session = {
     id: uuidv4(),
     sportId,
@@ -111,6 +128,9 @@ app.get('/sessions/:id', (req, res) => {
   // Display details of a specific session
   const sessionId = req.params.id;
   const session = sessions.find(s => s.id === sessionId);
+  if (!session) {
+    return res.status(404).send('Session not found');
+  }
   res.send(`Details of session ${sessionId}`);
 });
 
@@ -118,12 +138,11 @@ app.post('/sessions/:id/join', (req, res) => {
   // Join a session
   const sessionId = req.params.id;
   const session = sessions.find(s => s.id === sessionId);
-  if (session) {
-    // Add the user to the session
-    res.send(`Joined session ${sessionId}`);
-  } else {
-    res.send('Session not found');
+  if (!session) {
+    return res.status(404).send('Session not found');
   }
+  // Add the user to the session
+  res.send(`Joined session ${sessionId}`);
 });
 
 // Start the server
