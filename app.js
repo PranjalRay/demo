@@ -109,12 +109,12 @@ app.post('/login', async (req, res) => {
 
 // Admin routes
 
-app.get('/admin/admin-signin', (req, res) => {
-  // Render the admin sign-in form
-  res.render('admin-signin');
+app.get('/admin', (req, res) => {
+  // Display the admin sign-in form
+  res.render('admin/admin-signin');
 });
 
-app.post('/admin/signin', (req, res) => {
+app.post('/admin/admin-signin', (req, res) => {
   // Handle admin sign-in
   const { email, password } = req.body;
   // Check if the email and password match the admin credentials
