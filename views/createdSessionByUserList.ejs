@@ -1,0 +1,23 @@
+<!-- views/createdSessionByUserList.ejs -->
+<h3>Created Sessions by User</h3>
+<% if (createdSessions.length === 0) { %>
+  <p>No created sessions.</p>
+<% } else { %>
+  <ul>
+    <% createdSessions.forEach(function(session) { %>
+      <li>
+        <p>Sport: <%= session.sport %></p>
+        <p>Date: <%= session.date %></p>
+        <p>Time: <%= session.time %></p>
+        <p>Venue: <%= session.venue %></p>
+        <p>Additional Players Needed: <%= session.additionalPlayersNeeded %></p>
+        <p>Joined Players: <%= session.joinedPlayers.length %></p>
+        <% if (session.canceled) { %>
+          <p><em>This session has been canceled.</em></p>
+        <% } else { %>
+          <a href="/cancel-session?sessionId=<%= session.id %>" class="button">Cancel Session</a>
+        <% } %>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
