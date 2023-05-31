@@ -155,8 +155,4 @@ app.post('/sessions/:id/join', (req, res) => {
   // Add the user to the session
   res.send(`Joined session ${sessionId}`);
 });
-
-// Start the server
-app.listen(3000, () => {
-  console.log('Server started on port 3000');
-});
+module.exports = app;
