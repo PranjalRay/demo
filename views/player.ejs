@@ -1,0 +1,27 @@
+<!-- views/player.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>Player</title>
+</head>
+
+<body>
+  <% include header.ejs %>
+
+  <div class="container">
+    <h2>Welcome, <%= player.name %>!</h2>
+    <p>Player Dashboard</p>
+    <a href="/create-session" class="button">Create Session</a>
+    <a href="/logout" class="button">Logout</a>
+    <% include createdSessionByUserList.ejs %>
+    <% include joinedSessionSaperateList.ejs %>
+  </div>
+
+  <% include footer.ejs %>
+</body>
+
+</html>
