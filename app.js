@@ -129,6 +129,14 @@ app.post('/admin/admin-signin', (req, res) => {
   }
 });
 
+app.get('/admin/index', (req, res) => {
+  // Check if the user is an admin
+  if (req.session.isAdmin) {
+    res.render('admin/index'); // Render the index.ejs file in the admin folder
+  } else {
+    res.redirect('/admin/admin-signin'); // Redirect to the admin sign-in page if the user is not an admin
+  }
+});
 
 app.get('/signout', (req, res) => {
   // Handle user signout
