@@ -1,0 +1,7 @@
+<!-- views/canceledSession.ejs -->
+<h3>Canceled Session</h3>
+<% if (session.canceled) { %>
+  <p>Reason: <%= session.cancellationReason %></p>
+<% } else { %>
+  <p>No canceled session.</p>
+<% } %>
