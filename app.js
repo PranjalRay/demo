@@ -122,12 +122,13 @@ app.post('/admin/admin-signin', (req, res) => {
     // Admin sign-in successful
     // Set a flag in the session to indicate that the user is an admin
     req.session.isAdmin = true;
-    res.send('Admin sign-in successful');
+    res.redirect('/admin/index'); // Redirect to the index.ejs file in the admin folder
   } else {
     // Invalid admin credentials
     res.status(400).send('Invalid admin credentials');
   }
 });
+
 
 app.get('/signout', (req, res) => {
   // Handle user signout
