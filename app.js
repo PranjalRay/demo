@@ -34,13 +34,13 @@ const sessions = [];
 
 // Routes
 app.get('/', (req, res) => {
-  res.send('Welcome to the Sports Scheduler!');
+  res.render('index');
 });
 
 // Admin routes
 app.get('/admin/sports', (req, res) => {
   // Display a list of sports created by the admin
-  res.send('List of sports created by the admin');
+  res.render('admin');
 });
 
 app.post('/admin/sports', (req, res) => {
@@ -57,7 +57,7 @@ app.post('/admin/sports', (req, res) => {
 // User routes
 app.get('/signup', (req, res) => {
   // Display the signup form
-  res.send('Signup form');
+  res.render('signup');
 });
 
 app.post('/signup', async (req, res) => {
@@ -78,7 +78,7 @@ app.post('/signup', async (req, res) => {
 
 app.get('/signin', (req, res) => {
   // Display the signin form
-  res.send('Signin form');
+  res.render('signin');
 });
 
 app.post('/signin', async (req, res) => {
@@ -107,7 +107,7 @@ app.get('/signout', (req, res) => {
 
 app.get('/sessions/create', (req, res) => {
   // Display the form to create a new session
-  res.send('Create session form');
+  res.render('create-session');
 });
 
 app.post('/sessions/create', (req, res) => {
@@ -132,7 +132,7 @@ app.post('/sessions/create', (req, res) => {
 
 app.get('/sessions', (req, res) => {
   // Display a list of sessions
-  res.send('List of sessions');
+  res.render('sessions');
 });
 
 app.get('/sessions/:id', (req, res) => {
@@ -155,4 +155,5 @@ app.post('/sessions/:id/join', (req, res) => {
   // Add the user to the session
   res.send(`Joined session ${sessionId}`);
 });
+
 module.exports = app;
