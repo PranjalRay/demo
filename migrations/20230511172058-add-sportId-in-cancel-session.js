@@ -2,11 +2,11 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('CancelSessions', 'sportId', {
+    await queryInterface.addColumn('CancelSessions', 'sportSessionId', {
       type: Sequelize.UUID,
       allowNull: false,
       references: {
-        model: 'Sports',
+        model: 'SportSessions',
         key: 'id'
       },
       onUpdate: 'CASCADE',
@@ -15,6 +15,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('CancelSessions', 'sportId');
+    await queryInterface.removeColumn('CancelSessions', 'sportSessionId');
   }
 };
