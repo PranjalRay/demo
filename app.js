@@ -19,6 +19,7 @@ const app = express();
 
 // Set up middleware
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
   secret: 'secret-key',
