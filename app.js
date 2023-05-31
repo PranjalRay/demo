@@ -45,9 +45,8 @@ app.get('/', (req, res) => {
 });
 
 // Admin routes
-app.get('/admin/sports', (req, res) => {
-  // Display a list of sports created by the admin
-  res.render('admin');
+app.get('/admin/createSport', (req, res) => {
+  res.render('admin/createSport'); // Render the createSport.ejs file in the admin folder
 });
 
 app.post('/admin/sports', (req, res) => {
