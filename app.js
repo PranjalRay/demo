@@ -105,15 +105,15 @@ app.get("/login", (req, res) => {
 
 // POST route for user login
 app.post("/login", passport.authenticate("local", {
-  successRedirect: "/sessions",
+  successRedirect: "/SportList",
   failureRedirect: "/login",
   failureFlash: true,
 }));
 
 // GET route for user dashboard (protected route)
-app.get("/dashboard", connectEnsureLogin.ensureLoggedIn(), (req, res) => {
-  res.render("dashboard", {
-    title: "Dashboard",
+app.get("/SportList", connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+  res.render("/SportList", {
+    title: "SportList",
     user: req.user,
   });
 });
@@ -125,14 +125,14 @@ app.get("/logout", (req, res) => {
 });
 
 // GET route for admin panel (protected route)
-app.get("/admin", connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+app.get("/admin/admin-signin", connectEnsureLogin.ensureLoggedIn(), (req, res) => {
   // Check if the user is an admin
   if (req.user.isAdmin) {
-    res.render("admin", {
+    res.render("/admin/index", {
       title: "Admin Panel",
       user: req.user,
     });
   } else {
-    res.redirect("/dashboard");
+    res.redirect("/SportList");
   }
 });
