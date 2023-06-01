@@ -4,7 +4,6 @@ const { request, response } = require("express");
 const express = require("express");
 const csrf = require("tiny-csrf");
 const app = express();
-const { Sport, User, Sessions, playerSessions } = require("./models");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 app.use(bodyParser.json());
