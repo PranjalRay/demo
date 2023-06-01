@@ -21,9 +21,7 @@ const flash = require("connect-flash");
 app.set("views", path.join(__dirname, "views"));
 app.use(flash());
 const bcrypt = require("bcrypt");
-const sport = require("./models/sport");
 const saltRounds = 10;
-
 const CancelSession = require("./models/CancelSession");
 const Index = require("./models/Index");
 const Sport = require("./models/Sport");
