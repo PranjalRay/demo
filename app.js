@@ -80,6 +80,16 @@ passport.deserializeUser((id, done) => {
       done(error, null);
     });
 });
+function ensureLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login");
+}
+app.use((err, req, res, next) => {
+  res.status(500).json({ error: err.message });
+});
+
 // GET route for home page
 app.get("/", (req, res) => {
   res.render("index", {
@@ -140,6 +150,12 @@ app.get("/admin/admin-signin", connectEnsureLogin.ensureLoggedIn(), (req, res) =
   } else {
     res.redirect("/SportList");
   }
+});
+const { sequelize } = require("./models");
+sequelize.sync().then(() => {
+  const server = app.listen(3000, () => {
+    console.log("Server running on port 3000");
+  });
 });
 
 User.findOne({ where: { email: "admin@admin.com", password: "admin" } })
