@@ -1,20 +1,27 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/config.json'); // Import the Sequelize instance
+'use strict';
+const { Model } = require('sequelize');
 
-const User = sequelize.define('User', {
-  // Define the attributes of the User model
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-});
+module.exports = (sequelize, DataTypes) => {
+  class User extends Model {
+    static associate(models) {
+      User.hasMany(models.Todo, { foreignKey: 'userId' });
+      User.hasMany(models.Sport, { foreignKey: 'userId' });
+      User.hasMany(models.SportSession, { foreignKey: 'userId' });
+    }
+  }
 
-module.exports = User;
+  User.init(
+    {
+      firstName: DataTypes.STRING,
+      lastName: DataTypes.STRING,
+      email: DataTypes.STRING,
+      password: DataTypes.STRING
+    },
+    {
+      sequelize,
+      modelName: 'User'
+    }
+  );
+
+  return User;
+};
