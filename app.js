@@ -51,7 +51,7 @@ passport.use(
           if (result) {
             return done(null, user);
           } else {
-            return done(null, false, { message: "Invalid password" });
+            return done(null, false, { message: "Invalid credentials" });
           }
         })
         .catch((error) => {
@@ -136,3 +136,13 @@ app.get("/admin/admin-signin", connectEnsureLogin.ensureLoggedIn(), (req, res) =
     res.redirect("/SportList");
   }
 });
+
+User.findOne({ where: { email: "admin@admin.com", password: "admin" } })
+  .then((user) => {
+    if (user) {
+      user.isAdmin = true;
+      user.save();
+    }
+  });
+
+module.exports = app;
