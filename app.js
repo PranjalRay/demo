@@ -30,11 +30,6 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Database (assuming you're using a simple in-memory data structure)
-const sports = [];
-const users = [];
-const sessions = [];
-
 // Middleware to set 'message' variable
 app.use((req, res, next) => {
   res.locals.message = ''; // Initialize with an empty message
