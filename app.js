@@ -1,3 +1,6 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+const { request, response } = require("express");
 const express = require("express");
 const csrf = require("tiny-csrf");
 const app = express();
@@ -124,7 +127,7 @@ app.post("/login", passport.authenticate("local", {
 
 // GET route for user dashboard (protected route)
 app.get("/SportList", connectEnsureLogin.ensureLoggedIn(), (req, res) => {
-  res.render("SportList", {
+  res.render("/SportList", {
     title: "SportList",
     user: req.user,
   });
@@ -140,7 +143,7 @@ app.get("/logout", (req, res) => {
 app.get("/admin/admin-signin", connectEnsureLogin.ensureLoggedIn(), (req, res) => {
   // Check if the user is an admin
   if (req.user.isAdmin) {
-    res.render("admin/index", {
+    res.render("/admin/index", {
       title: "Admin Panel",
       user: req.user,
     });
@@ -148,20 +151,19 @@ app.get("/admin/admin-signin", connectEnsureLogin.ensureLoggedIn(), (req, res) =
     res.redirect("/SportList");
   }
 });
-
-const { sequelize } = require("./models");
+const { sequelize } = require("./models/index");
 sequelize.sync().then(() => {
-  User.findOne({ where: { email: "admin@admin.com", password: "admin" } })
-    .then((user) => {
-      if (user) {
-        user.isAdmin = true;
-        user.save();
-      }
-    });
-
   const server = app.listen(3000, () => {
     console.log("Server running on port 3000");
   });
 });
+
+User.findOne({ where: { email: "admin@admin.com", password: "admin" } })
+  .then((user) => {
+    if (user) {
+      user.isAdmin = true;
+      user.save();
+    }
+  });
 
 module.exports = app;
