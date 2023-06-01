@@ -1,198 +1,150 @@
-// Import necessary modules and dependencies
-const express = require('express');
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const bcrypt = require('bcrypt');
-const { v4: uuidv4 } = require('uuid');
-const path = require('path');
-
-// Import models
-const CancelSession = require('./models/CancelSession');
-const Index = require('./models/Index');
-const Sport = require('./models/Sport');
-const SportSession = require('./models/SportSession');
-const Todo = require('./models/Todo');
-const User = require('./models/User');
-
-// Create an instance of Express
+const express = require("express");
 const app = express();
+const csrf = require("csurf");
+const cookieParser = require("cookie-parser");
+const { User, Sport, SportSession, cancelSession } = require("./models");
+const bodyParser = require("body-parser");
+const path = require("path");
+const passport = require("passport");
+const connectEnsureLogin = require("connect-ensure-login");
+const session = require("express-session");
+const LocalStrategy = require("passport-local");
+const flash = require("connect-flash");
+const bcrypt = require("bcrypt");
+const { v4: uuidv4 } = require('uuid');
+const Sequelize = require("sequelize");
+const { Op } = require("sequelize");
 
-// Set up middleware
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session({
-  secret: 'secret-key',
-  resave: false,
-  saveUninitialized: false
-}));
-app.use(express.static(path.join(__dirname, 'public')));
+// Middleware
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(csrf({ cookie: true }));
+app.use(
+  session({
+    secret: "my key super secret",
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  })
+);
 
-// Database (assuming you're using a simple in-memory data structure)
-const sports = [];
-const users = [];
-const sessions = [];
+app.use(passport.initialize());
+app.use(passport.session());
 
-// Middleware to set 'message' variable
+const saltRounds = 10;
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(flash());
+
+// Passport configuration
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    (username, password, done) => {
+      User.findOne({ where: { email: username } })
+        .then(async (user) => {
+          const result = await bcrypt.compare(password, user.password);
+          if (result) {
+            return done(null, user);
+          } else {
+            return done(null, false, { message: "Invalid password" });
+          }
+        })
+        .catch((error) => {
+          return done(error);
+        });
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  console.log("Serializing user in session", user.id);
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findByPk(id)
+    .then((user) => {
+      done(null, user);
+    })
+    .catch((error) => {
+      done(error, null);
+    });
+});
+
 app.use((req, res, next) => {
-  res.locals.message = ''; // Initialize with an empty message
+  res.locals.messages = req.flash();
   next();
 });
 
-// Routes
-app.get('/', (req, res) => {
-  res.render('index');
-});
+// Middleware for admin access
+function AdminSport(req, res, next) {
+  const adminEmail = req.user.email;
+  const adminPassword = req.user.password; // Assuming the password is available in the req.user object
+  const actualAdminEmail = "admin@admin.com";
+  const actualAdminPassword = "admin"; // Replace with the actual admin password
 
-// Admin routes
-app.get('/admin/createSport', (req, res) => {
-  res.render('admin/createSport'); // Render the createSport.ejs file in the admin folder
-});
-
-app.post('/admin/sports', (req, res) => {
-  // Create a new sport
-  const { name } = req.body;
-  if (!name) {
-    return res.status(400).send('Sport name is required');
-  }
-  const sport = { id: uuidv4(), name };
-  sports.push(sport);
-  res.send(`Sport ${name} created successfully`);
-});
-
-// User routes
-app.get('/signup', (req, res) => {
-  // Display the signup form
-  res.render('signup', { message: res.locals.message });
-});
-
-app.post('/signup', async (req, res) => {
-  // Handle user signup
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    res.locals.message = 'Name, email, and password are required';
-    return res.redirect('/signup');
-  }
-  const existingUser = users.find(u => u.email === email);
-  if (existingUser) {
-    res.locals.message = 'User with that email already exists';
-    return res.redirect('/signup');
-  }
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const user = { id: uuidv4(), name, email, password: hashedPassword };
-  users.push(user);
-  res.send('Signup successful');
-});
-
-app.get('/login', (req, res) => {
-  // Display the signin form
-  res.render('login', { message: res.locals.message });
-});
-app.post('/login', async (req, res) => {
-  // Handle user signin
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).send('Email and password are required');
-  }
-  const user = users.find(u => u.email === email);
-  if (!user) {
-    return res.status(400).send('User not found');
-  }
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) {
-    return res.status(400).send('Invalid credentials');
-  }
-  req.session.userId = user.id;
-  res.send('Signin successful');
-});
-
-// Admin routes
-
-app.get('/admin/admin-signin', (req, res) => {
-  // Display the admin sign-in form
-  res.render('admin/admin-signin');
-});
-
-app.post('/admin/admin-signin', (req, res) => {
-  // Handle admin sign-in
-  const { email, password } = req.body;
-  // Check if the email and password match the admin credentials
-  if (email === 'admin@admin.com' && password === 'admin') {
-    // Admin sign-in successful
-    // Set a flag in the session to indicate that the user is an admin
-    req.session.isAdmin = true;
-    res.redirect('/admin/index'); // Redirect to the index.ejs file in the admin folder
+  if (adminEmail === actualAdminEmail && adminPassword === actualAdminPassword) {
+    return next();
   } else {
-    // Invalid admin credentials
-    res.status(400).send('Invalid admin credentials');
+    res.redirect("/sportList");
+    req.flash("error", "Please login with admin user ID and password.");
   }
+}
+
+// Middleware for user validation
+function validateUser(req, res, next) {
+  User.findOne({ where: { email: req.body.email } })
+    .then(async (user) => {
+      const result = await bcrypt.compare(req.body.password, user.password);
+      if (result) {
+        res.cookie(`em`, user.email, {
+          maxAge: 500 * 60 * 60 * 1000,
+          secure: true,
+          httpOnly: true,
+        });
+        res.cookie(`ps`, user.password, {
+          maxAge: 500 * 60 * 60 * 1000,
+          secure: true,
+          httpOnly: true,
+        });
+        res.cookie(`fn`, user.firstName, {
+          maxAge: 500 * 60 * 60 * 1000,
+          secure: true,
+          httpOnly: true,
+        });
+        next();
+      } else {
+        return done(null, false, { message: "Invalid password" });
+      }
+    })
+    .catch((error) => {
+      return next(error);
+    });
+}
+
+// Define your routes here
+app.get("/", (req, res) => {
+  // Handle home page route
 });
 
-app.get('/admin/index', (req, res) => {
-  // Check if the user is an admin
-  if (req.session.isAdmin) {
-    res.render('admin/index'); // Render the index.ejs file in the admin folder
-  } else {
-    res.redirect('/admin/admin-signin'); // Redirect to the admin sign-in page if the user is not an admin
-  }
+app.get("/sportList", (req, res) => {
+  // Handle sport list route
 });
 
-app.get('/signout', (req, res) => {
-  // Handle user signout
-  req.session.destroy();
-  res.send('Signout successful');
+app.get("/adminOnly", AdminOfSport, (req, res) => {
+  // Handle admin-only route
 });
 
-app.get('/sessions/create', (req, res) => {
-  // Display the form to create a new session
-  res.render('create-session', { message: res.locals.message });
+app.post("/login", validateUser, (req, res) => {
+  // Handle login route
 });
 
-app.post('/sessions/create', (req, res) => {
-  // Create a new session
-  const { sportId, teamA, teamB, additionalPlayers, dateTime, venue } = req.body;
-  if (!sportId || !teamA || !teamB || !additionalPlayers || !dateTime || !venue) {
-    res.locals.message = 'All fields are required';
-    return res.redirect('/sessions/create');
-  }
-  const session = {
-    id: uuidv4(),
-    sportId,
-    teamA,
-    teamB,
-    additionalPlayers,
-    dateTime,
-    venue,
-    createdBy: req.session.userId
-  };
-  sessions.push(session);
-  res.send('Session created successfully');
-});
-
-app.get('/sessions', (req, res) => {
-  // Display a list of sessions
-  res.render('sessions');
-});
-
-app.get('/sessions/:id', (req, res) => {
-  // Display details of a specific session
-  const sessionId = req.params.id;
-  const session = sessions.find(s => s.id === sessionId);
-  if (!session) {
-    return res.status(404).send('Session not found');
-  }
-  res.send(`Details of session ${sessionId}`);
-});
-
-app.post('/sessions/:id/join', (req, res) => {
-  // Join a session
-  const sessionId = req.params.id;
-  const session = sessions.find(s => s.id === sessionId);
-  if (!session) {
-    return res.status(404).send('Session not found');
-  }
-  // Add the user to the session
-  res.send(`Joined session ${sessionId}`);
-});
-
+// Export the app
 module.exports = app;
