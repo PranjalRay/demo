@@ -24,6 +24,14 @@ app.use(flash());
 const bcrypt = require("bcrypt");
 const sport = require("./models/sport");
 const saltRounds = 10;
+
+const CancelSession = require("./models/CancelSession");
+const Index = require("./models/Index");
+const Sport = require("./models/Sport");
+const SportSession = require("./models/SportSession");
+const Todo = require("./models/Todo");
+const User = require("./models/User");
+
 app.use(
   session({
     secret: "my-super-secret-key-21728172615261563",
