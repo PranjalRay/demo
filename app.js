@@ -22,13 +22,14 @@ app.set("views", path.join(__dirname, "views"));
 app.use(flash());
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-const CancelSession = require("./models/CancelSession");
-const Index = require("./models/Index");
-const Sport = require("./models/Sport");
-const SportSession = require("./models/SportSession");
-const Todo = require("./models/Todo");
-const User = require("./models/User");
-
+const CancelSession = require("./models/CancelSession.js");
+const Index = require("./models/Index.js");
+const Sport = require("./models/Sport.js");
+const SportSession = require("./models/SportSession.js");
+const Todo = require("./models/Todo.js");
+const User = require("./models/User.js");
+const Sequelize = require("sequelize");
+const { Op } = require("sequelize");
 app.use(
   session({
     secret: "my-super-secret-key-21728172615261563",
