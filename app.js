@@ -22,12 +22,12 @@ app.set("views", path.join(__dirname, "views"));
 app.use(flash());
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-const CancelSession = require("./models/CancelSession.js");
-const Index = require("./models/Index.js");
-const Sport = require("./models/Sport.js");
-const SportSession = require("./models/SportSession.js");
-const Todo = require("./models/Todo.js");
-const User = require("./models/User.js");
+const CancelSession = require("models/CancelSession.js");
+const Index = require("models/Index.js");
+const Sport = require("models/Sport.js");
+const SportSession = require("models/SportSession.js");
+const Todo = require("models/Todo.js");
+const User = require("models/User.js");
 const Sequelize = require("sequelize");
 const { Op } = require("sequelize");
 app.use(
@@ -152,7 +152,7 @@ app.get("/admin/admin-signin", connectEnsureLogin.ensureLoggedIn(), (req, res) =
     res.redirect("/SportList");
   }
 });
-const { sequelize } = require("./models");
+const { sequelize } = require("models");
 sequelize.sync().then(() => {
   const server = app.listen(3000, () => {
     console.log("Server running on port 3000");
