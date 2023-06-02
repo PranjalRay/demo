@@ -151,7 +151,7 @@ app.get("/admin/admin-signin", connectEnsureLogin.ensureLoggedIn(), (req, res) =
     res.redirect("/SportList");
   }
 });
-const { sequelize } = require("./models/index");
+const { sequelize } = require("./models/Index");
 sequelize.sync().then(() => {
   const server = app.listen(3000, () => {
     console.log("Server running on port 3000");
